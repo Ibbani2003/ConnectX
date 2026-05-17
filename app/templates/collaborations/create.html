@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="glass-card p-5 mt-4">
+            <h3 class="mb-4 text-center">Post a Collaboration Request</h3>
+            <p class="text-muted text-center mb-4">Looking for teammates? Describe your project and the skills you need.</p>
+            <form action="" method="post">
+                {{ form.hidden_tag() }}
+                
+                <div class="mb-3">
+                    {{ form.title.label(class="form-label") }}
+                    {{ form.title(class="form-control", placeholder="e.g., AI Attendance System") }}
+                    {% for error in form.title.errors %}<span class="text-danger small">{{ error }}</span>{% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.description.label(class="form-label") }}
+                    {{ form.description(class="form-control", rows="5", placeholder="Describe the project, goals, and what you expect from teammates...") }}
+                    {% for error in form.description.errors %}<span class="text-danger small">{{ error }}</span>{% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.skills_required.label(class="form-label") }}
+                    {{ form.skills_required(class="form-control", placeholder="e.g., React, Node.js, MongoDB (comma separated)") }}
+                    {% for error in form.skills_required.errors %}<span class="text-danger small">{{ error }}</span>{% endfor %}
+                </div>
+
+                <div class="mb-4">
+                    {{ form.team_size.label(class="form-label") }}
+                    {{ form.team_size(class="form-control", type="number", min="1", max="10") }}
+                    {% for error in form.team_size.errors %}<span class="text-danger small">{{ error }}</span>{% endfor %}
+                </div>
+
+                <div class="d-grid mt-4">
+                    {{ form.submit(class="btn btn-gradient btn-lg") }}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

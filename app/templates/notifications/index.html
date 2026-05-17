@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h2 class="mb-4 font-weight-bold">Notifications</h2>
+        
+        <div class="glass-card overflow-hidden">
+            {% if notifications %}
+                <div class="list-group list-group-flush">
+                {% for notification in notifications %}
+                    <a href="{{ url_for('notifications.read', id=notification.id) }}" class="list-group-item list-group-item-action d-flex align-items-center p-4 bg-transparent border-bottom {% if not notification.is_read %}bg-light bg-opacity-10{% endif %}">
+                        <div class="me-3">
+                            {% if 'commented' in notification.message %}
+                                <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-2"><i class="bi bi-chat-fill fs-5"></i></div>
+                            {% elif 'liked' in notification.message %}
+                                <div class="bg-danger bg-opacity-10 text-danger rounded-circle p-2"><i class="bi bi-heart-fill fs-5"></i></div>
+                            {% elif 'applied' in notification.message %}
+                                <div class="bg-success bg-opacity-10 text-success rounded-circle p-2"><i class="bi bi-person-plus-fill fs-5"></i></div>
+                            {% else %}
+                                <div class="bg-info bg-opacity-10 text-info rounded-circle p-2"><i class="bi bi-bell-fill fs-5"></i></div>
+                            {% endif %}
+                        </div>
+                        <div class="flex-grow-1">
+                            <p class="mb-1 {% if not notification.is_read %}fw-bold text-dark{% else %}text-muted{% endif %}">{{ notification.message }}</p>
+                            <small class="text-muted">{{ notification.timestamp.strftime('%B %d at %I:%M %p') }}</small>
+                        </div>
+                        {% if not notification.is_read %}
+                        <span class="badge bg-primary rounded-circle p-2"><span class="visually-hidden">Unread</span></span>
+                        {% endif %}
+                    </a>
+                {% endfor %}
+                </div>
+            {% else %}
+                <div class="p-5 text-center">
+                    <i class="bi bi-bell-slash display-1 text-muted mb-3 d-block"></i>
+                    <h5 class="text-muted">You're all caught up!</h5>
+                    <p class="text-muted">No new notifications.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="glass-card p-4 text-center">
+            <img src="{{ url_for('static', filename='uploads/' + user.profile_image) }}" class="profile-img mb-3">
+            <h3 class="mb-0">{{ user.full_name or user.username }}</h3>
+            <p class="text-muted">@{{ user.username }}</p>
+            
+            <div class="d-flex justify-content-center gap-3 mb-3">
+                <div class="text-center">
+                    <h5 class="mb-0">{{ user.posts.count() }}</h5>
+                    <small class="text-muted">Posts</small>
+                </div>
+                <div class="text-center">
+                    <h5 class="mb-0">{{ user.followers.count() }}</h5>
+                    <small class="text-muted">Followers</small>
+                </div>
+                <div class="text-center">
+                    <h5 class="mb-0">{{ user.followed.count() }}</h5>
+                    <small class="text-muted">Following</small>
+                </div>
+            </div>
+
+            {% if user.bio %}<p class="mb-3">{{ user.bio }}</p>{% endif %}
+
+            {% if user == current_user %}
+                <a href="{{ url_for('users.edit_profile') }}" class="btn btn-outline-gradient w-100">Edit Profile</a>
+            {% else %}
+                <div class="d-flex gap-2">
+                    {% if current_user.is_following(user) %}
+                        <a href="{{ url_for('users.unfollow', username=user.username) }}" class="btn btn-outline-gradient flex-grow-1">Unfollow</a>
+                    {% else %}
+                        <a href="{{ url_for('users.follow', username=user.username) }}" class="btn btn-gradient flex-grow-1">Follow</a>
+                    {% endif %}
+                    <a href="{{ url_for('messages.chat', username=user.username) }}" class="btn btn-outline-gradient"><i class="bi bi-envelope"></i></a>
+                </div>
+            {% endif %}
+
+            <hr class="my-4">
+
+            <div class="text-start">
+                {% if user.college_name %}
+                <p class="mb-2"><i class="bi bi-building me-2 text-primary"></i> {{ user.college_name }}</p>
+                {% endif %}
+                {% if user.department %}
+                <p class="mb-2"><i class="bi bi-book me-2 text-primary"></i> {{ user.department }}</p>
+                {% endif %}
+                {% if user.skills %}
+                <div class="mb-2">
+                    <i class="bi bi-tools me-2 text-primary"></i>
+                    {% for skill in user.skills.split(',') %}
+                    <span class="badge bg-secondary rounded-pill me-1">{{ skill.strip() }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% if user.github_link %}
+                <p class="mb-2"><i class="bi bi-github me-2 text-primary"></i> <a href="{{ user.github_link }}" target="_blank" class="text-decoration-none">GitHub</a></p>
+                {% endif %}
+                {% if user.linkedin_link %}
+                <p class="mb-2"><i class="bi bi-linkedin me-2 text-primary"></i> <a href="{{ user.linkedin_link }}" target="_blank" class="text-decoration-none">LinkedIn</a></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <h4 class="mb-4">Posts</h4>
+        {% if posts %}
+            {% for post in posts %}
+            <div class="glass-card p-4 mb-4">
+                <div class="d-flex align-items-center mb-3">
+                    <img src="{{ url_for('static', filename='uploads/' + post.author.profile_image) }}" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                    <div>
+                        <h6 class="mb-0">{{ post.author.username }}</h6>
+                        <small class="text-muted">{{ post.timestamp.strftime('%B %d, %Y') }}</small>
+                    </div>
+                </div>
+                <p class="mb-3">{{ post.content }}</p>
+                {% if post.image %}
+                <img src="{{ url_for('static', filename='uploads/' + post.image) }}" class="post-img mb-3">
+                {% endif %}
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="glass-card p-5 text-center">
+                <p class="text-muted mb-0">No posts yet.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

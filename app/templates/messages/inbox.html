@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <h2 class="mb-4 font-weight-bold">Messages</h2>
+        
+        <div class="glass-card overflow-hidden">
+            {% if conversations %}
+                <div class="list-group list-group-flush">
+                {% for conv in conversations %}
+                    <a href="{{ url_for('messages.chat', username=conv.user.username) }}" class="list-group-item list-group-item-action d-flex align-items-center p-3 bg-transparent border-bottom">
+                        <img src="{{ url_for('static', filename='uploads/' + conv.user.profile_image) }}" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                        <div class="flex-grow-1 min-width-0">
+                            <div class="d-flex justify-content-between align-items-baseline mb-1">
+                                <h6 class="mb-0 text-truncate font-weight-bold">{{ conv.user.full_name or conv.user.username }}</h6>
+                                <small class="text-muted ms-2">{{ conv.last_message.timestamp.strftime('%b %d') }}</small>
+                            </div>
+                            <p class="mb-0 text-truncate text-muted small {% if not conv.last_message.is_read and conv.last_message.recipient_id == current_user.id %}fw-bold text-dark{% endif %}">
+                                {% if conv.last_message.sender_id == current_user.id %}You: {% endif %}
+                                {{ conv.last_message.body }}
+                            </p>
+                        </div>
+                        {% if not conv.last_message.is_read and conv.last_message.recipient_id == current_user.id %}
+                        <span class="badge bg-primary rounded-circle p-2 ms-2"><span class="visually-hidden">New alerts</span></span>
+                        {% endif %}
+                    </a>
+                {% endfor %}
+                </div>
+            {% else %}
+                <div class="p-5 text-center">
+                    <i class="bi bi-chat-dots display-1 text-muted mb-3 d-block"></i>
+                    <h5 class="text-muted">No messages yet</h5>
+                    <p class="text-muted">Start connecting with other students!</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

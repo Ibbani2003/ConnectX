@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="font-weight-bold">Communities</h2>
+    <a href="{{ url_for('communities.create') }}" class="btn btn-gradient">Create Community</a>
+</div>
+
+<div class="row">
+    {% for community in communities %}
+    <div class="col-md-4 mb-4">
+        <div class="glass-card p-4 h-100 d-flex flex-column text-center">
+            <div class="mb-3">
+                <div class="d-inline-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-circle mb-3" style="width: 80px; height: 80px;">
+                    <i class="bi bi-people-fill display-5"></i>
+                </div>
+                <h4 class="mb-1"><a href="{{ url_for('communities.view', id=community.id) }}" class="text-decoration-none text-dark">{{ community.name }}</a></h4>
+                <p class="text-muted small mb-3">{{ community.members|length }} Members</p>
+            </div>
+            <p class="flex-grow-1 text-muted">{{ community.description[:100] }}{% if community.description|length > 100 %}...{% endif %}</p>
+            <div class="mt-3">
+                <a href="{{ url_for('communities.view', id=community.id) }}" class="btn btn-outline-gradient w-100">View Community</a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="glass-card p-5 text-center">
+            <h4 class="text-muted">No communities yet.</h4>
+            <p>Create one and start networking!</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

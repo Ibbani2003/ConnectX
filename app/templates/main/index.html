@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container">
+        <h1 class="hero-title">Connect. Collaborate. Create.</h1>
+        <p class="lead mb-4 text-muted">The ultimate campus collaboration & networking platform designed specifically for students to form teams, showcase skills, and build real-world projects.</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{{ url_for('auth.register') }}" class="btn btn-gradient btn-lg">Join ConnectX</a>
+            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-gradient btn-lg">Login</a>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5 text-center g-4">
+    <div class="col-md-4">
+        <div class="glass-card p-4 h-100">
+            <i class="bi bi-people-fill text-primary display-4 mb-3"></i>
+            <h3>Find Teammates</h3>
+            <p class="text-muted">Looking for a frontend dev or ML expert? Post collaboration requests and build your dream team.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="glass-card p-4 h-100">
+            <i class="bi bi-briefcase-fill text-info display-4 mb-3"></i>
+            <h3>Showcase Skills</h3>
+            <p class="text-muted">Create a professional portfolio, share your project updates, and get noticed by peers.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="glass-card p-4 h-100">
+            <i class="bi bi-collection-fill text-secondary display-4 mb-3"></i>
+            <h3>Join Communities</h3>
+            <p class="text-muted">Engage in technical discussions, join clubs, and network within your campus ecosystem.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

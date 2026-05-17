@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4 font-weight-bold">Explore</h2>
+<div class="row">
+    <div class="col-md-8 col-lg-6 mx-auto">
+        {% for post in posts %}
+        <div class="glass-card p-4 mb-4">
+            <div class="d-flex align-items-center mb-3">
+                <a href="{{ url_for('users.profile', username=post.author.username) }}">
+                    <img src="{{ url_for('static', filename='uploads/' + post.author.profile_image) }}" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                </a>
+                <div>
+                    <h6 class="mb-0"><a href="{{ url_for('users.profile', username=post.author.username) }}" class="text-decoration-none text-dark">{{ post.author.username }}</a></h6>
+                    <small class="text-muted">{{ post.timestamp.strftime('%B %d, %Y at %I:%M %p') }}</small>
+                </div>
+            </div>
+            
+            <p class="mb-3">{{ post.content }}</p>
+            
+            {% if post.image %}
+            <img src="{{ url_for('static', filename='uploads/' + post.image) }}" class="post-img mb-3">
+            {% endif %}
+            
+            <hr class="my-2 border-secondary opacity-25">
+            
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <a href="#" class="action-icon like-btn text-decoration-none me-3 {% if current_user.likes.filter_by(post_id=post.id).first() %}liked{% endif %}" data-post="{{ post.id }}">
+                        <i class="bi {% if current_user.likes.filter_by(post_id=post.id).first() %}bi-heart-fill{% else %}bi-heart{% endif %} fs-5"></i>
+                        <span class="like-count ms-1">{{ post.likes.count() }}</span>
+                    </a>
+                    <a href="{{ url_for('posts.post', post_id=post.id) }}" class="action-icon text-decoration-none text-dark">
+                        <i class="bi bi-chat fs-5"></i>
+                        <span class="ms-1">{{ post.comments.count() }}</span>
+                    </a>
+                </div>
+                <a href="#" class="action-icon save-btn text-decoration-none {% if current_user.saved_posts.filter_by(post_id=post.id).first() %}saved{% endif %}" data-post="{{ post.id }}">
+                    <i class="bi {% if current_user.saved_posts.filter_by(post_id=post.id).first() %}bi-bookmark-fill{% else %}bi-bookmark{% endif %} fs-5"></i>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

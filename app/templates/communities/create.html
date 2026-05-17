@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="glass-card p-5 mt-4">
+            <h3 class="mb-4 text-center">Create a Community</h3>
+            <p class="text-muted text-center mb-4">Start a new club, study group, or tech community.</p>
+            <form action="" method="post">
+                {{ form.hidden_tag() }}
+                
+                <div class="mb-3">
+                    {{ form.name.label(class="form-label") }}
+                    {{ form.name(class="form-control", placeholder="e.g., Web Dev Club") }}
+                    {% for error in form.name.errors %}<span class="text-danger small">{{ error }}</span>{% endfor %}
+                </div>
+
+                <div class="mb-4">
+                    {{ form.description.label(class="form-label") }}
+                    {{ form.description(class="form-control", rows="4", placeholder="What is this community about?") }}
+                    {% for error in form.description.errors %}<span class="text-danger small">{{ error }}</span>{% endfor %}
+                </div>
+
+                <div class="d-grid mt-4">
+                    {{ form.submit(class="btn btn-gradient btn-lg") }}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

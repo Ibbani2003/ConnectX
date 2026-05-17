@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="glass-card p-5 mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="text-primary mb-0">{{ req.title }}</h2>
+                <span class="badge {% if req.status == 'Open' %}bg-success{% else %}bg-secondary{% endif %} fs-6">{{ req.status }}</span>
+            </div>
+            
+            <div class="d-flex align-items-center mb-4 pb-3 border-bottom">
+                <img src="{{ url_for('static', filename='uploads/' + req.author.profile_image) }}" class="rounded-circle me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                <div>
+                    <h5 class="mb-0">{{ req.author.full_name or req.author.username }}</h5>
+                    <small class="text-muted">Posted on {{ req.timestamp.strftime('%B %d, %Y') }}</small>
+                </div>
+            </div>
+
+            <h5 class="mb-3">Project Description</h5>
+            <p class="mb-4">{{ req.description }}</p>
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h5 class="mb-2">Skills Required</h5>
+                    <div>
+                        {% for skill in req.skills_required.split(',') %}
+                        <span class="badge bg-secondary text-white me-1 mb-1">{{ skill.strip() }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h5 class="mb-2">Team Size Required</h5>
+                    <p class="lead"><i class="bi bi-people-fill text-primary"></i> {{ req.team_size }} Members</p>
+                </div>
+            </div>
+
+            {% if req.status == 'Open' %}
+                {% if req.author == current_user %}
+                    <hr class="my-4">
+                    <h4 class="mb-3">Applications ({{ req.applications.count() }})</h4>
+                    {% for app in req.applications %}
+                    <div class="glass-card p-3 mb-3">
+                        <div class="d-flex justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <img src="{{ url_for('static', filename='uploads/' + app.applicant.profile_image) }}" class="rounded-circle me-3" style="width: 40px; height: 40px; object-fit: cover;">
+                                <div>
+                                    <h6 class="mb-0"><a href="{{ url_for('users.profile', username=app.applicant.username) }}" class="text-decoration-none">{{ app.applicant.username }}</a></h6>
+                                    <small class="text-muted">{{ app.timestamp.strftime('%b %d, %Y') }}</small>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="badge {% if app.status == 'Approved' %}bg-success{% elif app.status == 'Rejected' %}bg-danger{% else %}bg-warning{% endif %}">{{ app.status }}</span>
+                            </div>
+                        </div>
+                        {% if app.message %}
+                        <p class="mt-2 mb-2 small bg-light p-2 rounded text-dark">{{ app.message }}</p>
+                        {% endif %}
+                        
+                        {% if app.status == 'Pending' %}
+                        <div class="mt-2 text-end">
+                            <a href="{{ url_for('collaborations.manage_application', app_id=app.id, action='approve') }}" class="btn btn-sm btn-success">Approve</a>
+                            <a href="{{ url_for('collaborations.manage_application', app_id=app.id, action='reject') }}" class="btn btn-sm btn-danger">Reject</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted">No applications yet.</p>
+                    {% endfor %}
+                {% else %}
+                    {% set existing_app = req.applications.filter_by(applicant_id=current_user.id).first() %}
+                    {% if existing_app %}
+                        <div class="alert alert-info mt-4">
+                            You have applied for this collaboration. Status: <strong>{{ existing_app.status }}</strong>
+                        </div>
+                    {% else %}
+                        <hr class="my-4">
+                        <h5 class="mb-3">Apply for this Collaboration</h5>
+                        <form action="{{ url_for('collaborations.apply', id=req.id) }}" method="post">
+                            <div class="mb-3">
+                                <label class="form-label">Why are you a good fit? (Optional)</label>
+                                <textarea name="message" class="form-control" rows="3" placeholder="Briefly describe your experience and why you want to join..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-gradient w-100">Submit Application</button>
+                        </form>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
